@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">IndoorCycling</string>
+    <string name="dev_list_header">Bluetooth Devices</string>
+    <string name="action_setting">Setting</string>
+    <string name="thumbnail">thumbnail image</string>
+    <string name="search_button">search</string>
+    <string name="search_word">search word</string>
+</resources>
