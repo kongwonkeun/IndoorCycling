@@ -48,7 +48,6 @@ class FragYTVList : Fragment() {
         val contacts = json.getJSONArray("items")
 
         for (i in 0 until contacts.length()) {
-            Log.d("tag", "---- $i ----")
             val c = contacts.getJSONObject(i)
             val kind = c.getJSONObject("id").getString("kind")
             val vid = if (kind == "youtube#video")
@@ -57,18 +56,21 @@ class FragYTVList : Fragment() {
                 c.getJSONObject("id").getString("playlistId")
             val title = c.getJSONObject("snippet").getString("title")
             var title_ = ""
-            try {
-                title_ = String(title.toByteArray(Charsets.ISO_8859_1), Charsets.UTF_8)
-            }
+            try { title_ = String(title.toByteArray(Charsets.ISO_8859_1), Charsets.UTF_8) }
             catch (e: UnsupportedEncodingException) {}
             val date = c.getJSONObject("snippet").getString("publishedAt").substring(0, 10)
+            var date_ = ""
+            try { date_ = String(date.toByteArray(Charsets.ISO_8859_1), Charsets.UTF_8) }
+            catch (e: UnsupportedEncodingException) {}
             val thumbnail = c.getJSONObject("snippet").getJSONObject("thumbnails").getJSONObject("default").getString("url")
-            m_ytv_list.add(YTVData(vid, title_, thumbnail, date))
+            m_ytv_list.add(YTVData(vid, title_, thumbnail, date_))
         }
     }
 
     fun search_ytv_by_keyword(): JSONObject {
-        val search_word = v_word.text.toString().replace(" ", "%20")
+        val word = v_word.text.toString()
+        val word_ = URLEncoder.encode(word, "UTF-8")
+        val search_word = word_.replace(" ", "%20")
         val url_base = "https://www.googleapis.com/youtube/v3/search?part=snippet&q="
         val url_key = "&key="
         val url_x = "&maxResults=50"
@@ -125,7 +127,7 @@ class FragYTVList : Fragment() {
             val url_s = url.substring(0, url.lastIndexOf("/") + 1)
             var url_e = url.substring(url.lastIndexOf("/") + 1, url.length)
             try {
-                url_e = URLEncoder.encode(url_e, "EUC-KR").replace("+", "%20")
+                url_e = URLEncoder.encode(url_e, "UTF-8").replace("+", "%20")
             }
             catch (e: UnsupportedEncodingException) {}
             val url_ = url_s + url_e
@@ -135,8 +137,12 @@ class FragYTVList : Fragment() {
 
             view.tag = position
             view.setOnClickListener {
-                val p = it.tag
-                Log.d("tag", "---- AAAA ----")
+                val pos = it.tag
+                val arg: Bundle = Bundle()
+                arg.putString("video", items[pos as Int].vid)
+                val f: Fragment = FragYTVPlayer()
+                f.arguments = arg
+                fragmentManager!!.beginTransaction().replace(R.id.v_frag, f, "player").addToBackStack(null).commit()
             }
             return view
         }
@@ -159,7 +165,7 @@ class FragYTVList : Fragment() {
             m_ytv_list_adapter = YTVListAdapter(context!!, R.layout.frag_ytv_list_item, m_ytv_list)
             v_list.adapter = m_ytv_list_adapter
             val s = m_ytv_list.size
-            Log.d("tag", "---- S = $s ----")
+            Log.d("YTV", "---- SIZE=$s ----")
             m_ytv_list_adapter!!.notifyDataSetChanged()
         }
 

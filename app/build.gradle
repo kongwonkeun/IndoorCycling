@@ -48,4 +48,5 @@ dependencies {
     implementation files('libs/YouTubeAndroidPlayerApi.jar')
     implementation 'org.apache.httpcomponents.client5:httpclient5:5.0'
     implementation 'com.squareup.picasso:picasso:2.71828'
+    implementation 'com.pierfrancescosoffritti.androidyoutubeplayer:core:10.0.5'
 }
