@@ -28,12 +28,16 @@ class FragYTVList : Fragment() {
     private val m_ytv_list: ArrayList<YTVData> = ArrayList()
     private var m_ytv_list_adapter: ArrayAdapter<YTVData>? = null
 
+    //
+    // LIFECYCLE
+    //
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.frag_ytv_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         v_search.setOnClickListener {
             m_task = YTVTask()
             m_task.execute()
@@ -97,6 +101,7 @@ class FragYTVList : Fragment() {
             json = JSONObject(str_builder.toString())
         }
         catch (e: JSONException) {}
+
         return json
     }
 
@@ -108,8 +113,7 @@ class FragYTVList : Fragment() {
     inner class YTVListAdapter(ctx: Context, rid: Int, var items: ArrayList<YTVData>) : ArrayAdapter<YTVData>(ctx, rid, items) {
 
         private var data: YTVData? = null
-        init {
-        }
+        init {}
 
         override fun getCount(): Int {
             return m_ytv_list.size
@@ -126,10 +130,12 @@ class FragYTVList : Fragment() {
             val url = data!!.thumbnail
             val url_s = url.substring(0, url.lastIndexOf("/") + 1)
             var url_e = url.substring(url.lastIndexOf("/") + 1, url.length)
+
             try {
                 url_e = URLEncoder.encode(url_e, "UTF-8").replace("+", "%20")
             }
             catch (e: UnsupportedEncodingException) {}
+
             val url_ = url_s + url_e
             Picasso.get().load(url_).into(view!!.findViewById<ImageView>(R.id.v_img))
             (view.findViewById<TextView>(R.id.v_date)).text = data!!.date
@@ -137,6 +143,9 @@ class FragYTVList : Fragment() {
 
             view.tag = position
             view.setOnClickListener {
+                //---- kong ----
+                (activity as ActMain).hide()
+                //----
                 val pos = it.tag
                 val arg: Bundle = Bundle()
                 arg.putString("video", items[pos as Int].vid)
@@ -154,6 +163,7 @@ class FragYTVList : Fragment() {
         override fun onPreExecute() {
             super.onPreExecute()
         }
+
         override fun doInBackground(vararg params: Void?): String? {
             try {
                 parse_json_data(search_ytv_by_keyword())
@@ -161,6 +171,7 @@ class FragYTVList : Fragment() {
             catch (e: JSONException) {}
             return null
         }
+
         override fun onPostExecute(result: String?) {
             m_ytv_list_adapter = YTVListAdapter(context!!, R.layout.frag_ytv_list_item, m_ytv_list)
             v_list.adapter = m_ytv_list_adapter

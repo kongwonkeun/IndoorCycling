@@ -92,11 +92,14 @@ class FragDevList : ListFragment() {
         //(activity as ActMain).hide()
         //----
         val dev: BluetoothDevice = m_dev_list[position - 1]
+        MyConfig.G_BT_addr = dev.address // save the address of remote device
+
         val arg: Bundle = Bundle()
         arg.putString("device", dev.address)
         val f: Fragment = FragYTVList()
         f.arguments = arg
-        fragmentManager!!.beginTransaction().replace(R.id.v_frag, f, "game").addToBackStack(null).commit()
+        fragmentManager!!.beginTransaction().replace(R.id.v_frag, f, "youtube").commit()
+        //fragmentManager!!.beginTransaction().replace(R.id.v_frag, f, "youtube").addToBackStack(null).commit()
     }
 
     //

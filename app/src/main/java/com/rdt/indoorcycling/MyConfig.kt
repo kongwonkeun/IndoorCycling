@@ -5,7 +5,6 @@ import android.view.View
 class MyConfig {
 
     companion object {
-
         val AUTO_HIDE = true
         val AUTO_HIDE_DELAY_MS = 300
         val UI_ANIM_DELAY_MS = 300
@@ -26,7 +25,9 @@ class MyConfig {
         val YTV_API_KEY = "AIzaSyCr3G4HDb2AJ0De3i9b1s8xizWaXcZwhn0"
         val YTV_MAX_RESULT = 50
 
+        var G_BT_addr: String? = null
     }
+
 
 }
 
